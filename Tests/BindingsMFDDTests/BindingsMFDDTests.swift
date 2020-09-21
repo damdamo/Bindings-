@@ -14,6 +14,7 @@ final class BindingsMFDDTests: XCTestCase {
     let s: Stopwatch = Stopwatch()
     
     let bindings = net.computeBindings(factory: factory)
+    print(bindings)
     
     print("----------------------------------")
     print(s.elapsed.humanFormat)

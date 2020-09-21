@@ -2,15 +2,16 @@ import Interpreter
 import AST
 import DDKit
 
-struct Binding<T: Equatable> {
+
+struct Binding<Key: Comparable & Hashable, Val: Hashable> {
   
-  typealias IDValues = [Int: T]
-  typealias DicIntPointer = [Int: MFDD<String,Int>.Pointer]
+  typealias IDValues = [Int: Val]
+  typealias DicIntPointer = [Int: MFDD<Key,Int>.Pointer]
   
-  let values: [T]
-  let variables: [String]
+  let values: [Val]
+  let variables: [Key]
   
-  func computeBindings(factory: MFDDFactory<String, Int>, vars: [String], values: [Int]) -> MFDD<String,Int>.Pointer {
+  func computeBindings(factory: MFDDFactory<Key, Int>, vars: [Key], values: [Int]) -> MFDD<Key,Int>.Pointer {
     var take:DicIntPointer = [:]
     if vars.count == 0 {
       return factory.one.pointer
@@ -22,14 +23,14 @@ struct Binding<T: Equatable> {
   }
   
   // Compute the bindings for all values depending of the variables
-  func computeBindings(factory: MFDDFactory<String, Int>) -> MFDD<String, Int> {
+  func computeBindings(factory: MFDDFactory<Key, Int>) -> MFDD<Key, Int> {
     let pointer = computeBindings(factory: factory, vars: self.variables, values: Array(0...(self.values.count-1)))
     return MFDD(pointer: pointer, factory: factory)
   }
   
   // Index all values by an Integer
-  func indexValues() -> [Int: T] {
-    var indexDic: [Int: T]  = [:]
+  func indexValues() -> [Int: Val] {
+    var indexDic: [Int: Val]  = [:]
     var count = 0
     for val in values {
       indexDic[count] = val
@@ -39,7 +40,7 @@ struct Binding<T: Equatable> {
   }
   
   // Function to order keys
-  func orderKeys() -> [String] {
+  func orderKeys() -> [Key] {
     return variables.sorted(by: {$0 > $1})
   }
   
